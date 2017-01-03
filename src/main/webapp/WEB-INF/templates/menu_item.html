@@ -1,0 +1,156 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <!-- Needed for prototyping -->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum Menu Item Templates</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/foundation.css" />
+    <script src="../../resources/js/vendor/modernizr.js"></script>
+  </head>
+
+  <body>
+
+    <hr/>Form fields :
+    <!--*************************************************-->
+    <!--                   FORM FIELDS                   -->
+    <!--                                                 -->
+    <!-- isNew : true if the menu item is being created, -->
+    <!-- false otherwise (if it already exists)          -->
+    <!--*************************************************-->
+
+    <div th:fragment="formFields(isNew)">
+
+      <!--/* Name */-->
+
+      <div class="row">
+
+        <div class="large-3 columns">
+          <label th:for="'name'" class="left inline" th:text="#{menuItem.name}">#menuItem.name</label>
+        </div>
+
+        <div class="large-9 columns">
+          <dl class="tabs" data-tab="" style="line-height: 0px;">
+            <dd th:each="language, iterStat : *{localizedNames.keySet()}"
+                th:classappend="(${iterStat.index} == 0) ? 'active'">
+              <a th:href="${isNew} ? @{'#newMenuItemName-' + ${language}} : @{'#name-' + ${language}}"
+                 th:text="${language.getDisplayLanguage(#ctx.locale)}"></a>
+            </dd>
+          </dl>
+
+          <div class="tabs-content">
+            <div th:each="nameEntry, iterStat : *{localizedNames}"
+                 th:id="${isNew} ? ${'newMenuItemName-' + nameEntry.key} : ${'name-' + nameEntry.key}"
+                 class="content" th:classappend="(${iterStat.index} == 0) ? 'active'" style="float: none;">
+              <input type="text" th:field="*{localizedNames[__${nameEntry.key}__]}" th:required="true"
+                     pattern="alpha_numeric" th:readonly="${isNew} ? false : ${mode} == 'view'" />
+              <small class="error" th:text="#{validationError.alpha_numeric}">#validationError.alpha_numeric</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!--/* Enabled */-->
+
+      <div class="row">
+
+        <div class="large-3 columns">
+          <label th:for="'enabled'" class="left inline" th:text="#{menuItem.enabled}"
+                 data-tooltip="" title="#menuItem.enabled.tooltip" th:title="#{menuItem.enabled.tooltip}">
+            #menuItem.enabled
+          </label>
+        </div>
+
+        <div class="large-9 columns pagination-centered">
+          <input type="checkbox" th:field="*{enabled}"
+                 th:disabled="${isNew} ? false : ${mode} == 'view'" style="vertical-align: sub;" />
+        </div>
+
+      </div>
+
+      <!--/* Image */-->
+
+      <div class="row">
+
+        <div class="large-3 columns">
+          <label th:for="'image'" class="left inline" th:text="#{menuItem.image}"
+                 data-tooltip="" title="#menuItem.image.tooltip" th:title="#{menuItem.image.tooltip}">
+            #menuItem.image
+          </label>
+        </div>
+
+        <div class="large-9 columns" th:switch="${isNew} or ${mode} == 'edit'">
+          <input th:case="true" type="file" name="image" id="image" />
+
+          <div th:case="false" id="imageContainer" class="pagination-centered" style="margin-bottom: 1rem;">
+            <img id="customImage" style="display: none;" th:src="*{imageURL}" />
+            <img id="defaultImage" style="display: none;"
+                 th:src="@{/img/image_not_found.jpeg}" src="../../resources/img/image_not_found.jpeg" />
+            <input type="hidden" th:field="*{hasImage}" />
+          </div>
+        </div>
+
+      </div>
+
+      <!--/* Price */-->
+
+      <div class="row">
+
+        <div class="large-3 columns">
+          <label th:for="'amount'" class="left inline" th:text="#{menuItem.price}">#menuItem.price</label>
+        </div>
+
+        <!--/* Amount */-->
+
+        <div class="large-5 columns">
+          <input type="number" step="0.01" th:field="*{amount}"
+                 th:required="true" th:readonly="${isNew} ? false : ${mode} == 'view'" />
+          <small class="error" th:text="#{validationError.number}">#validationError.number</small>
+        </div>
+
+        <!--/* Currency */-->
+
+        <div class="large-4 columns" style="padding-top: 0.625rem;">
+          <span th:text="*{currency.getDisplayName(#ctx.locale)}">#Euro</span>
+        </div>
+
+      </div>
+
+      <!--/* Description */-->
+
+      <div class="row">
+
+        <div class="large-3 columns">
+          <label th:for="'description'" class="left inline" th:text="#{menuItem.description}">#menuItem.description</label>
+        </div>
+
+        <div class="large-9 columns">
+          <dl class="tabs" data-tab="" style="line-height: 0px;">
+            <dd th:each="language, iterStat : *{localizedDescriptions.keySet()}"
+                th:classappend="(${iterStat.index} == 0) ? 'active'">
+              <a th:href="${isNew} ? @{'#newMenuItemDescription-' + ${language}} : @{'#description-' + ${language}}"
+                 th:text="${language.getDisplayLanguage(#ctx.locale)}"></a>
+            </dd>
+          </dl>
+
+          <div class="tabs-content">
+            <div th:each="descriptionEntry, iterStat : *{localizedDescriptions}"
+                 th:id="${isNew} ? ${'newMenuItemDescription-' + descriptionEntry.key} : ${'description-' + descriptionEntry.key}"
+                 class="content" th:classappend="(${iterStat.index} == 0) ? 'active'" style="float: none;">
+              <textarea th:field="*{localizedDescriptions[__${descriptionEntry.key}__]}"
+                        th:readonly="${isNew} ? false : ${mode} == 'view'" style="height: 5rem;"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </body>
+
+</html>

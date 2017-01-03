@@ -1,0 +1,261 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum · Sign up</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../../../resources/css/foundation.css" th:href="@{/css/foundation.css}" />
+    <script src="../../../../resources/js/vendor/modernizr.js" th:src="@{/js/vendor/modernizr.js}"></script>
+  </head>
+
+  <body>
+
+    <div th:include="templates/layout :: publicHeader"></div>
+
+    <section role="main">
+      <div class="row">
+        <div class="large-12 columns">
+
+          <h2 th:text="#{signup.title}">#Sign up</h2>
+
+          <div th:include="templates/widgets :: messageBox(${message})"></div>
+
+          <!--/* reCAPTCHA options */-->
+
+          <script type="text/javascript" th:inline="javascript">
+            var locale = /*[[${#ctx.locale.getLanguage()}]]*/ 'en';
+            if(['en', 'nl', 'fr', 'de', 'pt', 'ru', 'es', 'tr'].indexOf(locale) == -1) {
+              locale = 'en';
+            }
+            var RecaptchaOptions = {
+              theme : 'clean',
+              lang: locale
+            };
+          </script>
+
+          <!--/* REGISTRATION FORM */-->
+
+          <form method="post" name="registrationForm" th:action="@{''}" th:object="${registrationForm}" data-abide="">
+
+            <fieldset>
+
+              <legend th:text="#{signup.you}">#You</legend>
+
+              <!--/* Full name */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'lastName'" class="left inline" th:text="#{signup.name}">#signup.name</label>
+                </div>
+
+                <div class="large-4 columns">
+                  <input type="text" th:field="*{firstName}" th:placeholder="#{signup.firstName}" th:required="true" />
+                  <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                </div>
+
+                <div class="large-5 columns">
+                  <input type="text" th:field="*{lastName}" th:placeholder="#{signup.lastName}" th:required="true" />
+                  <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                </div>
+
+              </div>
+
+              <!--/* Username */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'username'" class="left inline" th:text="#{signup.username}">#signup.username</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <input type="email" th:field="*{username}" th:required="true" />
+                  <small class="error" th:text="#{validationError.email}">#validationError.email</small>
+                </div>
+
+              </div>
+
+              <!--/* Password */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'password'" class="left inline" th:text="#{signup.password}">#signup.password</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <input type="password" th:field="*{password}" th:required="true" pattern="light_password" />
+                  <small class="error" th:text="#{validationError.light_password}">#validationError.light_password</small>
+                </div>
+
+              </div>
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'confirmPassword'" class="left inline" th:text="#{signup.confirmPassword}">#signup.confirmPassword</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <input type="password" id="confirmPassword" name="confirmPassword" th:required="true" data-equalto="password" />
+                  <small class="error" th:text="#{validationError.confirmPassword}">#validationError.confirmPassword</small>
+                </div>
+
+              </div>
+
+            </fieldset>
+
+            <fieldset>
+
+              <legend th:text="#{signup.yourRestaurant}">#Your restaurant</legend>
+
+              <!--/* Restaurant's name */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'restaurantName'" class="left inline" th:text="#{signup.restaurantName}">#signup.restaurantName</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <input type="text" th:field="*{restaurantName}" th:required="true" />
+                  <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                </div>
+
+              </div>
+
+              <!--/* Country */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'restaurantCountryCode'" class="left inline" th:text="#{signup.restaurantCountry}">#signup.restaurantCountry</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <div th:include="templates/widgets :: countrySelector('restaurantCountryCode', true, false)"></div>
+                </div>
+
+              </div>
+
+              <!--/* Address */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'restaurantAddress'" class="left inline" th:text="#{signup.restaurantAddress}">#signup.restaurantAddress</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <input type="text" th:field="*{restaurantAddress}" th:required="true" />
+                  <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                </div>
+
+              </div>
+
+              <!--/* Postal Code */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'restaurantPostalCode'" class="left inline" th:text="#{signup.restaurantPostalCode}">#signup.restaurantPostalCode</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <input type="text" th:field="*{restaurantPostalCode}" th:required="true" />
+                  <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                </div>
+
+              </div>
+
+              <!--/* City */-->
+
+              <div class="row">
+
+                <div class="large-3 columns">
+                  <label th:for="'restaurantCity'" class="left inline" th:text="#{signup.restaurantCity}">#signup.restaurantCity</label>
+                </div>
+
+                <div class="large-9 columns">
+                  <select th:field="*{restaurantCity}" th:required="true"></select>
+                  <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                </div>
+
+              </div>
+
+            </fieldset>
+
+            <!--/* CAPTCHA */-->
+
+            <div class="row">
+              <div class="large-12 pagination-centered">
+
+                <div style="margin-left: 17rem">
+                  <script type="text/javascript"
+                          src="http://www.google.com/recaptcha/api/challenge?k=6Ldca_MSAAAAAG8OhO2COcA3FHiuCOlEQpNqagQF">
+                  </script>
+                  <noscript>
+                    <iframe src="http://www.google.com/recaptcha/api/noscript?k=6Ldca_MSAAAAAG8OhO2COcA3FHiuCOlEQpNqagQF"
+                            height="300" width="500" frameborder="0"></iframe><br />
+                    <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+                    </textarea>
+                    <input type="hidden" name="recaptcha_response_field"
+                           value="manual_challenge" />
+                  </noscript>
+                </div>
+
+              </div>
+            </div>
+
+            <br />
+
+            <!--/* Sign up button */-->
+
+            <div class="row">
+
+              <div class="large-12 pagination-centered">
+                <button type="submit" class="round success"
+                        id="signUpButton" th:text="#{signup.button}">#Sign up</button>
+                <h5><small th:inline="text">[[#{signup.tosAgreement}]]</small></h5>
+              </div>
+
+            </div>
+
+            <!--/* Latitude */-->
+            <input type="hidden" th:field="*{latitude}" th:required="true" />
+
+            <!--/* Longitude */-->
+            <input type="hidden" th:field="*{longitude}" th:required="true" />
+
+            <!--/* Formatted Address */-->
+            <input type="hidden" th:field="*{formattedAddress}" th:required="true" />
+
+          </form>
+
+        </div>
+      </div>
+
+      <div th:include="templates/widgets :: geocodingErrorModal('generic')"></div>
+      <div th:include="templates/widgets :: geocodingErrorModal('precision')"></div>
+
+    </section>
+
+    <div th:include="templates/layout :: footer"></div>
+
+    <!--/* Foundation initialization */-->
+    <script src="../../../../resources/js/vendor/jquery.js" th:src="@{/js/vendor/jquery.js}"></script>
+    <script src="../../../../resources/js/foundation.min.js" th:src="@{/js/foundation.min.js}"></script>
+    <script>
+      $(document).foundation();
+    </script>
+    <!--/* Google Maps API */-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <!--/* Geomenum */-->
+    <script src="../../../../resources/js/geomenum/geomenum.js" th:src="@{/js/geomenum/geomenum.js}"></script>
+    <script src="../../../../resources/js/geomenum/views/system/registration/signup.js" th:src="@{/js/geomenum/views/system/registration/signup.js}"></script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum · Login</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/foundation.css" th:href="@{/css/foundation.css}" />
+    <script src="../../resources/js/vendor/modernizr.js" th:src="@{/js/vendor/modernizr.js}"></script>
+  </head>
+
+  <body>
+
+    <div th:include="templates/layout :: publicHeader"></div>
+
+    <section role="main">
+      <div class="row">
+        <div class="large-12 columns">
+
+          <h1 th:text="#{login.title}">#Welcome to Geomenum !</h1>
+
+          <div th:include="templates/widgets :: messageBox(${message})"></div>
+
+          <!--/* LOGIN FORM */-->
+
+          <form method="post" th:action="@{''}" data-abide="">
+
+            <!--/* Username */-->
+
+            <div class="row">
+
+              <div class="large-3 columns">
+                <label th:for="'username'" class="left inline" th:text="#{login.username}">#login.username</label>
+              </div>
+
+              <div class="large-9 columns">
+                <input type="email" id="username" name="username" th:required="true" />
+                <small class="error" th:text="#{validationError.email}">#validationError.email</small>
+              </div>
+
+            </div>
+
+            <!--/* Password */-->
+
+            <div class="row">
+
+              <div class="large-3 columns">
+                <label th:for="'password'" class="left inline" th:text="#{login.password}">#login.password</label>
+              </div>
+
+              <div class="large-9 columns">
+                <input type="password" id="password" name="password" th:required="true" pattern="light_password" />
+                <small class="error" th:text="#{validationError.light_password}">#validationError.light_password</small>
+              </div>
+
+            </div>
+
+            <!--/* Login button */-->
+
+            <div class="row">
+
+              <div class="large-12 pagination-centered">
+                <button type="submit" th:text="#{login.signin}">#Sign in</button>
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </section>
+
+    <div th:include="templates/layout :: footer"></div>
+
+    <!--/* Foundation initialization */-->
+    <script src="../../resources/js/vendor/jquery.js" th:src="@{/js/vendor/jquery.js}"></script>
+    <script src="../../resources/js/foundation.min.js" th:src="@{/js/foundation.min.js}"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

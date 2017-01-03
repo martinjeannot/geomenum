@@ -1,0 +1,98 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <!-- Needed for prototyping -->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum Templates</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/foundation.css" />
+    <script src="../../resources/js/modernizr.js"></script>
+  </head>
+
+  <body>
+
+    <hr/>Available language selector :
+    <!--**********************************-->
+    <!--   AVAILABLE LANGUAGES SELECTOR   -->
+    <!--                                  -->
+    <!-- required : true to make the field required -->
+    <!-- disabled : true to make the field disabled -->
+    <!--                                  -->
+    <!--**********************************-->
+
+    <div th:fragment="availableLanguagesSelector(required, disabled)">
+
+      <select th:field="*{language}" th:required="${required}" th:disabled="${disabled}">
+        <option th:each="language : ${util['availableLanguages']}"
+                th:value="${language}" value="en"
+                th:text="#{${language}}">#English</option>
+      </select>
+      <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>Supported language selector :
+    <!--*********************************-->
+    <!--   SUPPORTED LANGUAGE SELECTOR   -->
+    <!--*********************************-->
+
+    <div th:fragment="supported_language_selector(required, disabled)">
+
+      <select th:field="*{language}" th:required="${required}" th:disabled="${disabled}">
+        <option th:each="language : ${util['supportedLanguages']}"
+                th:value="${language}" value="en"
+                th:text="#{${language}}">#English</option>
+      </select>
+      <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>Available language selector :
+    <!--*********************************-->
+    <!--   AVAILABLE CURRENCY SELECTOR   -->
+    <!--*********************************-->
+
+    <div th:fragment="available_currency_selector(required, disabled)">
+
+      <select th:field="*{currency}" th:required="${required}" th:disabled="${disabled}">
+        <option th:each="currency : ${util['availableCurrencies']}"
+                th:value="${currency}" value="USD"
+                th:text="#{${currency}}">#US Dollar</option>
+      </select>
+      <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>I18N flags :
+    <!--****************-->
+    <!--   I18N FLAGS   -->
+    <!--****************-->
+
+    <div th:fragment="i18n_flag(language)">
+
+      <img th:alt-title="flag_image"
+           src="../../resources/img/i18n/flags/en.png"
+           th:src="@{'/img/i18n/flags/' + ${language} + '.png'}" />
+
+    </div>
+
+    <hr/>TEST :
+    <!--**********-->
+    <!--   TEST   -->
+    <!--**********-->
+
+    <div th:fragment="test(language)">
+
+      <div style="text-align: center;">
+      </div>
+
+    </div>
+
+
+
+  </body>
+
+</html>

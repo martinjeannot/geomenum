@@ -1,0 +1,79 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <!-- Needed for prototyping -->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum Submenu Templates</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/foundation.css" />
+    <script src="../../resources/js/vendor/modernizr.js"></script>
+  </head>
+
+  <body>
+
+    <hr/>Form fields :
+    <!--*************************************************-->
+    <!--                   FORM FIELDS                   -->
+    <!--                                                 -->
+    <!-- alreadyExists : true if the submenu already     -->
+    <!-- exists (edition), false if it was just created  -->
+    <!--*************************************************-->
+
+    <div th:fragment="formFields(alreadyExists)">
+
+      <!--/* Name */-->
+
+      <div class="row">
+
+        <div class="large-3 columns">
+          <label th:for="'name'" class="left inline" th:text="#{submenu.name}">#submenu.name</label>
+        </div>
+
+        <div class="large-9 columns">
+          <dl class="tabs" data-tab="" style="line-height: 0px;">
+            <dd th:each="language, iterStat : *{localizedNames.keySet()}"
+                th:classappend="(${iterStat.index} == 0) ? 'active'">
+              <a th:href="${alreadyExists} ? @{'#name-' + ${language}} : @{'#newSubmenuName-' + ${language}}"
+                 th:text="${language.getDisplayLanguage(#ctx.locale)}"></a>
+            </dd>
+          </dl>
+
+          <div class="tabs-content">
+            <div th:each="nameEntry, iterStat : *{localizedNames}"
+                 th:id="${alreadyExists} ? ${'name-' + nameEntry.key} : ${'newSubmenuName-' + nameEntry.key}"
+                 class="content" th:classappend="(${iterStat.index} == 0) ? 'active'" style="float: none; padding: 0.9375rem 0;">
+              <input type="text" th:field="*{localizedNames[__${nameEntry.key}__]}" th:required="true"
+                     pattern="alpha_numeric" th:readonly="${alreadyExists} ? ${mode} == 'view' : false" />
+              <small class="error" th:text="#{validationError.alpha_numeric}">#validationError.alpha_numeric</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!--/* Enabled */-->
+
+      <div class="row">
+
+        <div class="large-3 columns">
+          <label th:for="'enabled'" class="left inline" th:text="#{submenu.enabled}"
+                 data-tooltip="" title="#submenu.enabled.tooltip" th:title="#{submenu.enabled.tooltip}">
+            #submenu.enabled
+          </label>
+        </div>
+
+        <div class="large-9 columns pagination-centered">
+          <input type="checkbox" th:field="*{enabled}"
+                 th:disabled="${alreadyExists} ? ${mode} == 'view' : false" style="vertical-align: sub;" />
+        </div>
+
+      </div>
+
+    </div>
+
+  </body>
+
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2014 Geomenum Inc. All Rights Reserved.
+  -->
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Geomenum Suite">
+
+    <parameter name="testEnvironment" value="local" />
+
+    <!-- UNIT TESTS -->
+    <test name="Unit Test">
+        <groups>
+            <run>
+                <include name="unit"/>
+            </run>
+        </groups>
+
+        <packages>
+            <package name="com.geomenum.*"/>
+        </packages>
+    </test>
+
+</suite>

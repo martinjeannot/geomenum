@@ -1,0 +1,286 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum · Submenu</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../../resources/css/foundation.css" th:href="@{/css/foundation.css}" />
+    <script src="../../../resources/js/vendor/modernizr.js" th:src="@{/js/vendor/modernizr.js}"></script>
+  </head>
+
+  <body>
+
+    <div th:include="templates/layout :: header"></div>
+
+    <section role="main" th:with="mode = ${mode} ?: 'view'">
+      <div class="row">
+
+        <div class="large-12 columns">
+
+          <!--/* Breadcrumb navigation */-->
+          <div th:include="templates/layout :: breadcrumbNavigationBar"></div>
+
+          <div th:include="templates/widgets :: messageBox(${message})"></div>
+
+          <div class="row">
+
+            <div class="large-6 columns"
+                 th:switch="${#strings.contains(breadcrumbNavigationBar[0], submenu.id)}">
+
+              <!--/* SUBMENU FORM */-->
+
+              <form method="post" th:action="@{''}"
+                    th:object="${submenu}" data-abide=""
+                    th:case="false">
+
+                <fieldset>
+
+                  <legend>
+                    <ul class="button-group">
+                      <li>
+                        <a href="?mode=edit" th:onclick="(${mode} == 'edit') ? 'return false;'"
+                           class="button tiny" th:classappend="(${mode} == 'edit') ? 'disabled secondary'"
+                           th:text="#{submenu.edit}">#submenu.edit
+                        </a>
+                      </li>
+                      <li>
+                        <button type="submit" th:onclick="(${mode} != 'edit') ? 'return false;'"
+                                class="tiny" th:classappend="(${mode} != 'edit') ? 'disabled secondary'"
+                                th:text="#{submenu.save}">#submenu.save
+                        </button>
+                      </li>
+                    </ul>
+                  </legend>
+
+                  <div th:include="templates/submenu :: formFields(true)"></div>
+
+                </fieldset>
+
+              </form>
+
+              <!--/* SUBMENU TUTORIAL */-->
+
+              <div class="panel"
+                   th:case="true">
+
+                <ul class="side-nav">
+                  <li><span th:text="#{submenu.sideHelpMessage1}">#submenu.sideHelpMessage1</span></li>
+                  <li class="divider"></li>
+                  <li><span th:inline="text">[[#{submenu.sideHelpMessage2}]]</span></li>
+                  <li class="divider"></li>
+                  <li><span th:inline="text">[[#{submenu.sideHelpMessage3}]]</span></li>
+                  <li class="divider"></li>
+                  <li><span th:inline="text">[[#{submenu.sideHelpMessage4}]]</span></li>
+                  <li class="divider"></li>
+                  <li><span th:inline="text">[[#{submenu.sideHelpMessage5}]]</span></li>
+                </ul>
+
+              </div>
+
+            </div>
+
+            <div class="large-6 columns">
+
+              <!--/* SUBMENU DASHBOARD */-->
+
+              <form method="post" th:action="@{''}"
+                    th:object="${submenuDashboardInfo}">
+
+                <fieldset>
+
+                  <legend>
+                    <ul class="button-group">
+                      <li>
+                        <a href="#" data-reveal-id="submenuCreationModal" class="button tiny success"
+                           th:text="#{submenu.dashboard.addSubmenu}">#submenu.dashboard.addSubmenu</a>
+                      </li>
+                      <li>
+                        <a href="#" data-reveal-id="menuItemCreationModal" class="button tiny success"
+                           th:text="#{submenu.dashboard.addMenuItem}">#submenu.dashboard.addMenuItem</a>
+                      </li>
+                    </ul>
+                  </legend>
+
+                  <div class="row" th:each="child, iterStat : *{#object}">
+
+                    <div class="large-2 columns">
+                      <button type="submit" th:formaction="@{'?moveUp=' + ${child['id']}}"
+                              class="tiny"
+                              th:classappend="${iterStat.first} ? 'disabled secondary'"
+                              style="height: 1.75rem; margin-bottom: 0;">&#9650;
+                      </button>
+                      <br />
+                      <button type="submit" th:formaction="@{'?moveDown=' + ${child['id']}}"
+                              class="tiny"
+                              th:classappend="${iterStat.last} ? 'disabled secondary'"
+                              style="height: 1.75rem; line-height: 0;">&#9660;
+                      </button>
+                    </div>
+
+                    <div class="large-5 columns" style="line-height: 2rem; padding-top: 0.625rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+                      <a th:href="@{${child['url']}}" href="/linkToSomeMenuItem" th:text="${child['text']}"
+                         data-tooltip="" title="Full submenu/menu item name" th:title="${child['text']}">some Submenu/Menu Item</a>
+                    </div>
+
+                    <div class="large-3 columns">
+                      <ul class="button-group">
+                        <li>
+                          <button type="submit" th:formaction="@{'?moveToUpperLevel=' + ${child['id']}}"
+                                  class="tiny"
+                                  th:classappend="${#strings.contains(breadcrumbNavigationBar[0], submenu.id)} ? 'disabled secondary'"
+                                  style="width: 42px; padding-left: 8px; font-size: 190%;">&#8626;
+                          </button>
+                        </li>
+                        <li>
+                          <a href="#" class="button tiny" th:onclick="'return false;'"
+                             th:attr="data-dropdown=${'lowerLevelHover-' + iterStat.index}" data-dropdown="lowerLevelHover-1"
+                             style="width: 42px; padding-left: 8px; font-size: 190%;"
+                             th:classappend="${#lists.isEmpty(child['siblings'])} ? 'disabled secondary'">&#8694;
+                          </a>
+                          <ul th:id="${'lowerLevelHover-' + iterStat.index}" id="lowerLevelHover-1" class="f-dropdown" data-dropdown-content="">
+                            <li th:each="sibling : ${child['siblings']}">
+                              <a href="#"
+                                 th:text="${sibling['text']}"
+                                 th:onclick="'$(\'#' + ${'lowerLevelHover-' + iterStat.index} + '\').closest(\'form\')' +
+                                   '.attr(\'action\', \'?moveToLowerLevel=' + ${child['id']} + '&amp;sibling=' + ${sibling['id']} + '\').submit();'">Some Submenu</a>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="large-2 columns">
+                      <a href="#" data-th-attr="data-reveal-id=${'childDeletionModal-' + child['id']}"
+                         class="button tiny alert" style="height: 3.5rem; padding-top: 1.35rem">&#10060;</a>
+                    </div>
+
+                    <!--/* SUBMENU/MENU ITEM DELETION MODALS */-->
+
+                    <div th:id="${iterStat.first} ? 'stubChildDeletionModalId' : ${'childDeletionModal-' + child['id']}" class="reveal-modal" data-reveal="">
+                      <div class="pagination-centered">
+                        <h2 th:text="${child['text']}">some Submenu/Menu Item</h2>
+                        <p class="lead" th:text="#{${child['allowsChildren']} ? 'submenu.dashboard.submenuDeletionModal.message' : 'submenu.dashboard.menuItemDeletionModal.message'}">#childDeletionModal.message</p>
+                        <form method="post"
+                              th:action="@{ (${child['allowsChildren']} ? '?deleteSubmenu=' : '?deleteMenuItem=') + ${child['id']} }">
+                          <button type="submit" class="tiny alert"
+                                  th:text="#{${child['allowsChildren']} ? 'submenu.dashboard.submenuDeletionModal.deleteSubmenu' : 'submenu.dashboard.menuItemDeletionModal.deleteMenuItem'}">#childDeletionModal.deleteChild</button>
+                        </form>
+                      </div>
+                      <a class="close-reveal-modal">&#215;</a>
+                    </div>
+
+                  </div>
+
+                </fieldset>
+
+              </form>
+
+              <!--/* SUBMENU CREATION MODAL */-->
+
+              <div id="submenuCreationModal" class="reveal-modal" data-reveal="">
+
+                <form method="post" th:action="@{'?addSubmenu'}"
+                      th:object="${newSubmenu}" data-abide="">
+
+                  <fieldset>
+
+                    <legend th:text="#{submenu.creationModal.title}">#submenu.creationModal.title</legend>
+
+                    <div th:include="templates/submenu :: formFields(false)"></div>
+
+                    <!--/* Submit button */-->
+
+                    <div class="row">
+
+                      <div class="large-12 pagination-centered">
+                        <button type="submit" class="tiny"
+                                th:text="#{submenu.save}">#submenu.save
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </fieldset>
+
+                </form>
+
+                <a class="close-reveal-modal">&#215;</a>
+              </div>
+
+              <!--/* MENU ITEM CREATION MODAL */-->
+
+              <div id="menuItemCreationModal" class="reveal-modal" data-reveal="">
+
+                <form method="post" th:action="@{'?addMenuItem'}"
+                      th:object="${newMenuItem}"
+                      data-abide=""
+                      enctype="multipart/form-data">
+
+                  <fieldset>
+
+                    <legend th:text="#{menuItem.creationModal.title}">#menuItem.creationModal.title</legend>
+
+                    <div th:include="templates/menu_item :: formFields(true)"></div>
+
+                    <!--/* Submit button */-->
+
+                    <div class="row">
+
+                      <div class="large-12 pagination-centered">
+                        <button type="submit" class="tiny"
+                                th:text="#{menuItem.save}">#menuItem.save
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </fieldset>
+
+                </form>
+
+                <a class="close-reveal-modal">&#215;</a>
+              </div>
+
+              <!--/* FIXME : FIRST DELETION MODAL
+                   * Within the loop of the deletion modals, the first form is never rendered in the resulting HTML
+                   * so no form can be submitted to delete the first item. This should be investigated */-->
+
+              <div th:unless="${#lists.isEmpty(submenuDashboardInfo)}" th:with="child = ${submenuDashboardInfo[0]}">
+
+                <div th:id="${'childDeletionModal-' + child['id']}" class="reveal-modal" data-reveal="">
+                  <div class="pagination-centered">
+                    <h2 th:text="${child['text']}">some Submenu/Menu Item</h2>
+                    <p class="lead" th:text="#{${child['allowsChildren']} ? 'submenu.dashboard.submenuDeletionModal.message' : 'submenu.dashboard.menuItemDeletionModal.message'}">#childDeletionModal.message</p>
+                    <form method="post"
+                          th:action="@{ (${child['allowsChildren']} ? '?deleteSubmenu=' : '?deleteMenuItem=') + ${child['id']} }">
+                      <button type="submit" class="tiny alert"
+                              th:text="#{${child['allowsChildren']} ? 'submenu.dashboard.submenuDeletionModal.deleteSubmenu' : 'submenu.dashboard.menuItemDeletionModal.deleteMenuItem'}">#childDeletionModal.deleteChild</button>
+                    </form>
+                  </div>
+                  <a class="close-reveal-modal">&#215;</a>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <div th:include="templates/layout :: footer"></div>
+
+    <!--/* Foundation initialization */-->
+    <script src="../../../resources/js/vendor/jquery.js" th:src="@{/js/vendor/jquery.js}"></script>
+    <script src="../../../resources/js/foundation.min.js" th:src="@{/js/foundation.min.js}"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

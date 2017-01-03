@@ -1,0 +1,208 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum · User Settings</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../../resources/css/foundation.css" th:href="@{/css/foundation.css}" />
+    <script src="../../../resources/js/vendor/modernizr.js" th:src="@{/js/vendor/modernizr.js}"></script>
+  </head>
+
+  <body>
+
+    <div th:include="templates/layout :: header"></div>
+
+    <section role="main">
+      <div class="row">
+
+        <div class="large-12 columns">
+
+          <div th:include="templates/widgets :: messageBox(${message})"></div>
+
+          <!--/* USER SETTINGS FORM */-->
+
+          <form method="post" th:action="@{''}"
+                th:object="${user}"
+                th:with="mode = ${mode} ?: 'view'" data-abide="">
+
+            <fieldset>
+
+              <legend>
+                <ul class="button-group">
+                  <li>
+                    <a href="?mode=edit" th:onclick="(${mode} == 'edit') ? 'return false;'"
+                       class="button tiny" th:classappend="(${mode} == 'edit') ? 'disabled secondary'"
+                       th:text="#{user.edit}">#user.edit
+                    </a>
+                  </li>
+                  <li>
+                    <button type="submit" th:onclick="(${mode} != 'edit') ? 'return false;'"
+                            class="tiny" th:classappend="(${mode} != 'edit') ? 'disabled secondary'"
+                            th:text="#{user.save}">#user.save
+                    </button>
+                  </li>
+                </ul>
+              </legend>
+
+              <dl class="accordion" data-accordion="">
+
+                <dd>
+                  <a href="#accountPanel" th:text="#{user.account}">#user.account</a>
+                  <div id="accountPanel" class="content active">
+
+                    <!--/* Full name */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'lastName'" class="left inline" th:text="#{user.name}">#user.name</label>
+                      </div>
+
+                      <div class="large-4 columns">
+                        <input type="text" th:field="*{firstName}" th:placeholder="#{user.firstName}"
+                               th:required="true" th:readonly="${mode} == 'view'" />
+                        <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                      </div>
+
+                      <div class="large-5 columns">
+                        <input type="text" th:field="*{lastName}" th:placeholder="#{user.lastName}"
+                               th:required="true" th:readonly="${mode} == 'view'" />
+                        <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                      </div>
+
+                    </div>
+
+                    <!--/* Username */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'username'" class="left inline" th:text="#{user.username}"
+                               data-tooltip="" title="#user.username.tooltip" th:title="#{user.username.tooltip}">
+                          #user.username
+                        </label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <small th:text="#{user.usernameResetNotice}">#user.usernameResetNotice</small>
+                        <input type="email" th:field="*{username}" th:required="true" th:readonly="${mode} == 'view'" />
+                        <small class="error" th:text="#{validationError.email}">#validationError.email</small>
+                      </div>
+
+                    </div>
+
+                    <!--/* Language */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'language'" class="left inline" th:text="#{user.language}">#user.language</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <div th:include="templates/widgets :: supportedLanguageSelector('language', true, ${mode} == 'view')"></div>
+                      </div>
+                    </div>
+
+                    <!--/* Delete Account */-->
+
+                    <div class="row" th:if="${mode} == 'edit'">
+
+                      <hr />
+                      <div class="large-12 pagination-centered">
+                        <a href="#" data-reveal-id="userAccountDeletionModal" class="button tiny alert" style="margin-bottom: 0"
+                           th:text="#{user.deleteAccount}">#user.deleteAccount</a>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </dd>
+
+                <dd>
+                  <a href="#passwordPanel" th:text="#{user.password}">#user.password</a>
+                  <div id="passwordPanel" class="content">
+
+                    <!--/* Password */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'oldPassword'" class="left inline" th:text="#{user.oldPassword}">#user.oldPassword</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <input type="password" th:field="*{oldPassword}" th:readonly="${mode} == 'view'" pattern="light_password" />
+                        <small class="error" th:text="#{validationError.light_password}">#validationError.light_password</small>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'newPassword'" class="left inline" th:text="#{user.newPassword}">#user.newPassword</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <input type="password" th:field="*{newPassword}" th:readonly="${mode} == 'view'" pattern="light_password" />
+                        <small class="error" th:text="#{validationError.light_password}">#validationError.light_password</small>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'confirmNewPassword'" class="left inline" th:text="#{user.confirmNewPassword}">#user.confirmNewPassword</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" th:required="true"
+                               th:readonly="${mode} == 'view'" data-equalto="newPassword" />
+                        <small class="error" th:text="#{validationError.confirmPassword}">#validationError.confirmPassword</small>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </dd>
+
+              </dl>
+
+            </fieldset>
+
+          </form>
+
+        </div>
+
+        <!--/* Account Deletion Modal */-->
+
+        <div id="userAccountDeletionModal" class="reveal-modal" data-reveal="" th:if="${mode} == 'edit'">
+          <div class="pagination-centered">
+            <p class="lead" th:text="#{userAccountDeletionModal.message}">#userAccountDeletionModal.message</p>
+            <p th:text="#{userAccountDeletionModal.notice}">#userAccountDeletionModal.notice</p>
+            <form method="post" th:action="@{'?deleteUserAccount'}">
+              <button type="submit" id="deleteUserAccountSubmitButton" class="tiny alert"
+                      th:text="#{user.deleteAccount}">#user.deleteAccount</button>
+            </form>
+          </div>
+          <a class="close-reveal-modal">&#215;</a>
+        </div>
+
+      </div>
+    </section>
+
+    <div th:include="templates/layout :: footer"></div>
+
+    <!--/* Foundation initialization */-->
+    <script src="../../../resources/js/vendor/jquery.js" th:src="@{/js/vendor/jquery.js}"></script>
+    <script src="../../../resources/js/foundation.min.js" th:src="@{/js/foundation.min.js}"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

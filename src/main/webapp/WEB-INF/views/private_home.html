@@ -1,0 +1,78 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum · Home</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/foundation.css" th:href="@{/css/foundation.css}" />
+    <script src="../../resources/js/vendor/modernizr.js" th:src="@{/js/vendor/modernizr.js}"></script>
+  </head>
+
+  <body>
+
+    <div th:include="templates/layout :: header"></div>
+
+    <section role="main">
+      <div class="row">
+
+        <div class="large-9 columns">
+
+          <div th:include="templates/widgets :: messageBox(${message})"></div>
+
+          <h1 th:text="#{home.title}">#Welcome to Geomenum !</h1>
+
+          <h4 class="subheader" style="font-style: italic" th:text="#{home.subtitle}">#The first free back-office blablabla</h4>
+
+          <br />
+
+          <p th:text="#{home.featuresIntro}">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel ligula faucibus, commodo ante et,
+            volutpat urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+          </p>
+
+          <h5 style="font-weight: bold" th:text="#{home.restaurantFeature}">#Bla bla bla</h5>
+          <p th:text="#{home.restaurantFeatureMessage}">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel ligula faucibus, commodo ante et,
+            volutpat urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+          </p>
+
+          <h5 style="font-weight: bold" th:text="#{home.menuFeature}">#Bla bla bla</h5>
+          <p th:text="#{home.menuFeatureMessage}">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel ligula faucibus, commodo ante et,
+            volutpat urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+          </p>
+
+          <h5 style="font-weight: bold" th:text="#{home.reservationFeature}">#Bla bla bla</h5>
+          <p th:text="#{home.reservationFeatureMessage}">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel ligula faucibus, commodo ante et,
+            volutpat urna. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+          </p>
+
+        </div>
+
+        <div class="large-3 columns">
+          <div class="panel">
+            <ul class="side-nav">
+              <li><span th:text="#{home.sideHelpMessage}"></span></li>
+              <li class="divider"></li>
+              <li><span th:text="#{home.sideContactMessage}"></span></li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div th:include="templates/layout :: footer"></div>
+
+    <!--/* Foundation initialization */-->
+    <script src="../../resources/js/vendor/jquery.js" th:src="@{/js/vendor/jquery.js}"></script>
+    <script src="../../resources/js/foundation.min.js" th:src="@{/js/foundation.min.js}"></script>
+    <script>
+      $(document).foundation();
+    </script>
+  </body>
+</html>

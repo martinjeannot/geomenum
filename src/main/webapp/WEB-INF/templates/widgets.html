@@ -1,0 +1,208 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <!-- Needed for prototyping -->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum Widgets Templates</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/foundation.css" />
+    <script src="../../resources/js/vendor/modernizr.js"></script>
+  </head>
+
+  <body>
+
+    <hr/>Message box :
+    <!--***************************************-->
+    <!--              MESSAGE BOX              -->
+    <!--                                       -->
+    <!-- messageParam : the message to display -->
+    <!--***************************************-->
+
+    <div th:fragment="messageBox(messageParam)">
+
+      <div th:if="${messageParam}" class="alert-box radius" data-alert=""
+           th:classappend="${#strings.endsWith(messageParam, '~success')} ? 'success'
+               : (${#strings.endsWith(messageParam, '~warning')} ? 'warning'
+               : (${#strings.endsWith(messageParam, '~error')} ? 'alert'
+               : 'secondary'))"
+           th:with="messageKey=${#strings.substringBefore(messageParam, '~')}">
+        <span th:text="#{${messageKey} ?: ${messageParam}}">#message</span>
+        <a href="#" class="close">&times;</a>
+      </div>
+
+    </div>
+
+    <hr/>Language selector :
+    <!--*********************************************-->
+    <!--              LANGUAGE SELECTOR              -->
+    <!--                                             -->
+    <!-- field : the name of the corresponding field -->
+    <!-- required : true to make this field required -->
+    <!-- disabled : true to make this field disabled -->
+    <!--*********************************************-->
+
+    <div th:fragment="languageSelector(field, required, disabled)">
+      <div th:switch="*{__${field}__} == null">
+
+        <div th:case="true">
+          <select th:id="${field}" th:name="${field}" th:required="${required}" th:disabled="${disabled}">
+            <option th:each="language : ${languages}"
+                    th:value="${language}" value="en"
+                    th:text="${language.getDisplayLanguage(#ctx.locale)}">#English</option>
+          </select>
+          <small th:if="${required}" class="error" th:text="#{validationError.required}">#validationError.required</small>
+        </div>
+
+        <div th:case="false">
+          <select th:field="*{__${field}__}" th:required="${required}" th:disabled="${disabled}">
+            <option th:each="language : ${languages}"
+                    th:value="${language}" value="en"
+                    th:text="${language.getDisplayLanguage(#ctx.locale)}">#English</option>
+          </select>
+          <small th:if="${required}" class="error" th:text="#{validationError.required}">#validationError.required</small>
+        </div>
+
+      </div>
+    </div>
+
+    <hr/>Supported language selector :
+    <!--*********************************************-->
+    <!--         SUPPORTED LANGUAGE SELECTOR         -->
+    <!--                                             -->
+    <!-- field : the name of the corresponding field -->
+    <!-- required : true to make this field required -->
+    <!-- disabled : true to make this field disabled -->
+    <!--*********************************************-->
+
+    <div th:fragment="supportedLanguageSelector(field, required, disabled)">
+
+      <select th:field="*{__${field}__}" th:required="${required}" th:disabled="${disabled}">
+        <option th:each="supportedLanguage : ${supportedLanguages}"
+                th:value="${supportedLanguage}" value="en"
+                th:text="${supportedLanguage.getDisplayLanguage(#ctx.locale)}">#English</option>
+      </select>
+      <small th:if="${required}" class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>Country selector :
+    <!--*********************************************-->
+    <!--               COUNTRY SELECTOR              -->
+    <!--                                             -->
+    <!-- field : the name of the corresponding field -->
+    <!-- required : true to make this field required -->
+    <!-- disabled : true to make this field disabled -->
+    <!--*********************************************-->
+
+    <div th:fragment="countrySelector(field, required, disabled)">
+
+      <select th:field="*{__${field}__}" th:required="${required}" th:disabled="${disabled}">
+        <option th:each="country : ${countries}"
+                th:value="${country.getIsoCode()}" value="GB"
+                th:text="${country.getName(#ctx.locale)}">#United Kingdom</option>
+      </select>
+      <small th:if="${required}" class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>Currency selector :
+    <!--*********************************************-->
+    <!--              CURRENCY SELECTOR              -->
+    <!--                                             -->
+    <!-- field : the name of the corresponding field -->
+    <!-- required : true to make this field required -->
+    <!-- disabled : true to make this field disabled -->
+    <!--*********************************************-->
+
+    <div th:fragment="currencySelector(field, required, disabled)">
+
+      <select th:field="*{__${field}__}" th:required="${required}" th:disabled="${disabled}">
+        <option th:each="currency : ${currencies}"
+                th:value="${currency}" value="USD"
+                th:text="${currency.getDisplayName(#ctx.locale)}">#US Dollar</option>
+      </select>
+      <small th:if="${required}" class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>Hours selector :
+    <!--*********************************************-->
+    <!--                HOURS SELECTOR               -->
+    <!--                                             -->
+    <!-- field : the name of the corresponding field -->
+    <!-- required : true to make this field required -->
+    <!-- disabled : true to make this field disabled -->
+    <!--*********************************************-->
+
+    <div th:fragment="hoursSelector(field, required, disabled)">
+
+      <select th:field="*{__${field}__}" th:required="${required}" th:disabled="${disabled}">
+        <option value="">Closed</option>
+        <option th:each="i : ${#numbers.sequence(0, 47)}"
+                th:value="#{'hours.value' + ${i}}"
+                th:text="#{'hours.text' + ${i}}">
+          #0h00
+        </option>
+      </select>
+      <small th:if="${required}" class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>International Dialing Code selector :
+    <!--*********************************************-->
+    <!--     INTERNATIONAL DIALING CODE SELECTOR     -->
+    <!--                                             -->
+    <!-- field : the name of the corresponding field -->
+    <!-- required : true to make this field required -->
+    <!-- disabled : true to make this field disabled -->
+    <!--*********************************************-->
+
+    <div th:fragment="internationalDialingCodeSelector(field, required, disabled)">
+
+      <select th:field="*{__${field}__}" th:required="${required}" th:disabled="${disabled}">
+        <option th:each="country : ${countries}"
+                th:value="${country.getIsoCode()}" value="FR"
+                th:text="${country.getName(#ctx.locale) + ' (+' + country.getInternationalDialingCode() + ')'}">#France (+33)</option>
+      </select>
+      <small th:if="${required}" class="error" th:text="#{validationError.required}">#validationError.required</small>
+
+    </div>
+
+    <hr/>Geocoding Error Modal :
+    <!--***************************************************************-->
+    <!--                     GEOCODING ERROR MODAL                     -->
+    <!--                                                               -->
+    <!-- errorType : the type of the geocoding error                   -->
+    <!-- Currently supported error types are 'generic' and 'precision' -->
+    <!--***************************************************************-->
+
+    <div th:fragment="geocodingErrorModal(errorType)">
+
+      <div th:id="${'geocodingErrorModal-' + errorType}" class="reveal-modal" data-reveal="">
+        <h2 th:text="#{geocodingError.title}">#Geocoding Error</h2>
+        <p class="lead" th:text="#{${'geocodingError.' + errorType + '.message'}}">#Geocoding error message</p>
+        <p th:text="#{${'geocodingError.' + errorType + '.advice'}}">#Geocoding error advice</p>
+        <a class="close-reveal-modal">&#215;</a>
+      </div>
+
+    </div>
+
+    <hr/>I18N flags TODO :
+    <!--****************-->
+    <!--   I18N FLAGS TODO   -->
+    <!--****************-->
+
+    <div th:fragment="i18n_flag(language)">
+
+      <img th:alt-title="flag_image"
+           src="../../resources/img/i18n/flags/en.png"
+           th:src="@{'/img/i18n/flags/' + ${language} + '.png'}" />
+
+    </div>
+
+  </body>
+
+</html>

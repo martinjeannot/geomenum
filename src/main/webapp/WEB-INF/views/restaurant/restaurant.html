@@ -1,0 +1,462 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum · Restaurant</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../../resources/css/foundation.css" th:href="@{/css/foundation.css}" />
+    <script src="../../../resources/js/vendor/modernizr.js" th:src="@{/js/vendor/modernizr.js}"></script>
+
+    <!--/* Custom styling - TODO : create a custom stylesheet for this. Also check mobile result of gm-style vs gmnoprint */-->
+    <style type="text/css">
+      .gm-style img {
+        max-width: none;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div th:include="templates/layout :: header"></div>
+
+    <section role="main">
+      <div class="row">
+
+        <div class="large-12 columns">
+
+          <div th:include="templates/widgets :: messageBox(${message})"></div>
+
+          <!--/* RESTAURANT FORM */-->
+
+          <form method="post" name="restaurantForm"
+                th:action="@{''}"
+                th:object="${restaurant}"
+                th:with="mode = ${mode} ?: 'view'" data-abide=""
+                enctype="multipart/form-data">
+
+            <input type="hidden" id="mode" th:value="${mode}" />
+
+            <fieldset>
+
+              <legend>
+                <ul class="button-group">
+                  <li>
+                    <a href="?mode=edit" th:onclick="(${mode} == 'edit') ? 'return false;'"
+                       class="button tiny" th:classappend="(${mode} == 'edit') ? 'disabled secondary'"
+                       id="editButton" th:text="#{restaurant.edit}">#restaurant.edit
+                    </a>
+                  </li>
+                  <li>
+                    <button type="submit" th:onclick="(${mode} != 'edit') ? 'return false;'"
+                            class="tiny" th:classappend="(${mode} != 'edit') ? 'disabled secondary'"
+                            id="saveButton" th:text="#{restaurant.save}">#restaurant.save
+                    </button>
+                  </li>
+                </ul>
+              </legend>
+
+              <dl class="accordion" data-accordion="">
+
+                <!--/* RESTAURANT - GENERAL */-->
+
+                <dd>
+                  <a href="#generalPanel" th:text="#{restaurant.general}">#restaurant.general</a>
+                  <div id="generalPanel" class="content active">
+
+                    <!--/* Name */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'name'" class="left inline" th:text="#{restaurant.name}">#restaurant.name</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <input type="text" th:field="*{name}" th:required="true"
+                               pattern="alpha_numeric" th:readonly="${mode} == 'view'" />
+                        <small class="error" th:text="#{validationError.alpha_numeric}">#validationError.alpha_numeric</small>
+                      </div>
+
+                    </div>
+
+                    <!--/* Enabled */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'enabled'" class="left inline" th:text="#{restaurant.enabled}"
+                               data-tooltip="" title="#restaurant.enabled.tooltip" th:title="#{restaurant.enabled.tooltip}">
+                          #restaurant.enabled
+                        </label>
+                      </div>
+
+                      <div class="large-9 columns pagination-centered">
+                        <input type="checkbox" th:field="*{enabled}"
+                               th:disabled="${mode} == 'view'" style="vertical-align: sub;" />
+                      </div>
+
+                    </div>
+
+                    <!--/* Phone Number */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'localPhoneNumber'" class="left inline" th:text="#{restaurant.phoneNumber}">
+                          #restaurant.phoneNumber
+                        </label>
+                      </div>
+
+                      <div class="large-3 columns">
+                        <div th:include="templates/widgets :: internationalDialingCodeSelector('internationalDialingCountryCode', false, ${mode} == 'view')"></div>
+                      </div>
+
+                      <div class="large-6 columns">
+                        <input type="text" th:field="*{localPhoneNumber}" th:readonly="${mode} == 'view'" />
+                      </div>
+
+                    </div>
+
+                    <!--/* Cuisine */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'cuisine'" class="left inline" th:text="#{restaurant.cuisine}">#restaurant.cuisine</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <select th:field="*{cuisine}" th:required="true" th:disabled="${mode} == 'view'">
+                          <option th:each="tempCuisine : ${cuisines}"
+                                  th:value="${tempCuisine}"
+                                  th:text="#{${tempCuisine.messageKey}}">
+                          </option>
+                        </select>
+                        <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                      </div>
+
+                    </div>
+
+                    <!--/* Image */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'image'" class="left inline" th:text="#{restaurant.image}"
+                               data-tooltip="" title="#restaurant.image.tooltip" th:title="#{restaurant.image.tooltip}">
+                          #restaurant.image
+                        </label>
+                      </div>
+
+                      <div class="large-9 columns" th:switch="${mode}">
+                        <div th:case="'view'" id="imageContainer" class="pagination-centered" style="margin-bottom: 1rem;">
+                          <img id="customImage" style="display: none;" th:src="*{imageURL}" />
+                          <img id="defaultImage" style="display: none;"
+                               th:src="@{/img/image_not_found.jpeg}" src="../../../resources/img/image_not_found.jpeg" />
+                          <input type="hidden" th:field="*{hasImage}" />
+                        </div>
+
+                        <input th:case="'edit'" type="file" name="image" id="image" />
+                      </div>
+
+                    </div>
+
+                    <!--/* Description */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'description'" class="left inline" th:text="#{restaurant.description}"
+                               data-tooltip="" title="#restaurant.description.tooltip" th:title="#{restaurant.description.tooltip}">
+                          #restaurant.description
+                        </label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <dl class="tabs" data-tab="" style="line-height: 0px;">
+                          <dd th:each="language, iterStat : *{localizedDescriptions.keySet()}"
+                              th:classappend="(${iterStat.index} == 0) ? 'active'">
+                            <a th:href="@{'#description-' + ${language}}" th:text="${language.getDisplayLanguage(#ctx.locale)}"></a>
+                          </dd>
+                        </dl>
+
+                        <div class="tabs-content">
+                          <div th:each="descriptionEntry, iterStat : *{localizedDescriptions}" th:id="${'description-' + descriptionEntry.key}"
+                               class="content" th:classappend="(${iterStat.index} == 0) ? 'active'" style="float: none; padding: 0.9375rem 0;">
+                            <textarea th:field="*{localizedDescriptions[__${descriptionEntry.key}__]}"
+                                      th:readonly="${mode} == 'view'" style="height: 5rem;"></textarea>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!--/* Opening Days and Hours */-->
+
+                    <div class="row pagination-centered">
+
+                      <table align="center">
+
+                        <thead>
+                          <tr>
+                            <th th:text="#{restaurant.openingDaysAndHours}">#restaurant.openingDaysAndHours</th>
+                            <th th:text="#{monday}">#Monday</th>
+                            <th th:text="#{tuesday}">#Tuesday</th>
+                            <th th:text="#{wednesday}">#Wednesday</th>
+                            <th th:text="#{thursday}">#Thursday</th>
+                            <th th:text="#{friday}">#Friday</th>
+                            <th th:text="#{saturday}">#Saturday</th>
+                            <th th:text="#{sunday}">#Sunday</th>
+                            <th style="width: 6rem;" th:text="#{restaurant.openingTime}">#restaurant.openingTime</th>
+                            <th style="width: 6rem;" th:text="#{restaurant.closingTime}">#restaurant.closingTime</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                            <td th:text="#{restaurant.lunch}">#restaurant.lunch</td>
+                            <td th:each="i : ${#numbers.sequence(0, 13, 2)}">
+                              <input type="checkbox" th:field="*{openingDays[__${i}__]}"
+                                     th:disabled="${mode} == 'view'" style="vertical-align: sub;" />
+                            </td>
+                            <td>
+                              <div th:include="templates/widgets :: hoursSelector('openingHours[0]', false, ${mode} == 'view')"></div>
+                            </td>
+                            <td>
+                              <div th:include="templates/widgets :: hoursSelector('openingHours[1]', false, ${mode} == 'view')"></div>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td th:text="#{restaurant.dinner}">#restaurant.dinner</td>
+                            <td th:each="i : ${#numbers.sequence(1, 13, 2)}">
+                              <input type="checkbox" th:field="*{openingDays[__${i}__]}"
+                                     th:disabled="${mode} == 'view'" style="vertical-align: sub;" />
+                            </td>
+                            <td>
+                              <div th:include="templates/widgets :: hoursSelector('openingHours[2]', false, ${mode} == 'view')"></div>
+                            </td>
+                            <td>
+                              <div th:include="templates/widgets :: hoursSelector('openingHours[3]', false, ${mode} == 'view')"></div>
+                            </td>
+                          </tr>
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                    <!--/* Supported Languages */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'supportedLanguages'" class="left inline" th:text="#{restaurant.supportedLanguages}"
+                               data-tooltip="" title="#restaurant.supportedLanguages.tooltip" th:title="#{restaurant.supportedLanguages.tooltip}">
+                          #restaurant.supportedLanguages
+                        </label>
+                      </div>
+
+                      <div class="large-9 columns" style="padding-top: 0.625rem;">
+
+                        <ul class="disc">
+                          <li th:each="supportedLanguage : *{supportedLanguages}"
+                              th:text="${supportedLanguage.getDisplayLanguage(#ctx.locale)}">
+                          </li>
+                        </ul>
+
+                        <div th:if="${mode} != 'view'">
+
+                          <!--/* Add language */-->
+
+                          <a href="#" data-reveal-id="languageAdditionModal" class="button tiny"
+                             th:text="#{restaurant.addLanguage}">#restaurant.addLanguage</a>
+
+                          <div id="languageAdditionModal" class="reveal-modal" data-reveal="">
+                            <h2 th:text="#{languageAdditionModal.title}">#languageAdditionModal.title</h2>
+                            <p class="lead" th:text="#{languageAdditionModal.message}">#languageAdditionModal.message</p>
+                            <div th:include="templates/widgets :: languageSelector('tempAddedLanguage', false, ${mode} == 'view')"></div>
+                            <p th:text="#{languageAdditionModal.notice}">#languageAdditionModal.notice</p>
+                            <div class="pagination-centered">
+                              <button type="submit" id="addLanguageSubmitButton" class="tiny" th:text="#{restaurant.save}">#restaurant.save</button>
+                            </div>
+                            <a class="close-reveal-modal">&#215;</a>
+                          </div>
+
+                          &nbsp;
+
+                          <!--/* Remove language */-->
+
+                          <a class="button tiny" th:classappend="*{#sets.size(supportedLanguages) le 1} ? 'disabled secondary'"
+                             data-th-attr="data-reveal-id=*{#sets.size(supportedLanguages) gt 1} ? 'languageRemovalModal'"
+                             th:text="#{restaurant.removeLanguage}">#restaurant.removeLanguage</a>
+
+                          <div th:if="*{#sets.size(supportedLanguages) gt 1}" id="languageRemovalModal" class="reveal-modal" data-reveal="">
+                            <h2 th:text="#{languageRemovalModal.title}">#languageRemovalModal.title</h2>
+                            <p class="lead" th:text="#{languageRemovalModal.message}">#languageRemovalModal.message</p>
+                            <select id="tempRemovedLanguage" name="tempRemovedLanguage" th:disabled="${mode} == 'view'">
+                              <option th:each="supportedLanguage : *{supportedLanguages}"
+                                      th:value="${supportedLanguage}" value="en"
+                                      th:text="${supportedLanguage.getDisplayLanguage(#ctx.locale)}">#English</option>
+                            </select>
+                            <div class="pagination-centered">
+                              <button type="submit" id="removeLanguageSubmitButton" class="tiny" th:text="#{restaurant.save}">#restaurant.save</button>
+                            </div>
+                            <a class="close-reveal-modal">&#215;</a>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <!--/* Currency */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'currency'" class="left inline" th:text="#{restaurant.currency}"
+                               data-tooltip="" title="#restaurant.currency.tooltip" th:title="#{restaurant.currency.tooltip}">
+                          #restaurant.currency
+                        </label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <div th:include="templates/widgets :: currencySelector('currency', true, ${mode} == 'view')"></div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </dd>
+
+                <!--/* RESTAURANT - LOCATION */-->
+
+                <dd>
+                  <a href="#locationPanel" th:text="#{restaurant.location}">#restaurant.location</a>
+                  <div id="locationPanel" class="content">
+
+                    <!--/* Country */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'location.countryCode'" class="left inline" th:text="#{restaurant.country}">#restaurant.country</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <div th:include="templates/widgets :: countrySelector('location.countryCode', true, ${mode} == 'view')"></div>
+                      </div>
+
+                    </div>
+
+                    <!--/* Address */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'location.address'" class="left inline" th:text="#{restaurant.address}">#restaurant.address</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <input type="text" th:field="*{location.address}" th:required="true" th:readonly="${mode} == 'view'" />
+                        <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                      </div>
+
+                    </div>
+
+                    <!--/* Postal Code */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'location.postalCode'" class="left inline" th:text="#{restaurant.postalCode}">#restaurant.postalCode</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <input type="text" th:field="*{location.postalCode}" th:required="true" th:readonly="${mode} == 'view'" />
+                        <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                      </div>
+
+                    </div>
+
+                    <!--/* City */-->
+
+                    <div class="row">
+
+                      <div class="large-3 columns">
+                        <label th:for="'location.city'" class="left inline" th:text="#{restaurant.city}">#restaurant.city</label>
+                      </div>
+
+                      <div class="large-9 columns">
+                        <select th:field="*{location.city}" th:required="true" th:disabled="${mode} == 'view'">
+                          <option th:value="*{location.city}"
+                                  th:text="*{location.city}"></option>
+                        </select>
+                        <small class="error" th:text="#{validationError.required}">#validationError.required</small>
+                      </div>
+
+                    </div>
+
+                    <!--/* Map */-->
+
+                    <div class="row" th:if="${mode} == 'view'">
+                      <div class="large-12 pagination-centered">
+                        <div id="map-canvas" style="width: 100%; height: 32rem"></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </dd>
+
+              </dl>
+
+            </fieldset>
+
+            <!--/* Latitude */-->
+            <input type="hidden" id="location.latitude" th:field="*{location.latitude}" th:required="true" value="48.880691" />
+
+            <!--/* Longitude */-->
+            <input type="hidden" id="location.longitude" th:field="*{location.longitude}" th:required="true" value="2.338668" />
+
+            <!--/* Formatted Address */-->
+            <input type="hidden" th:field="*{location.formattedAddress}" th:required="true" />
+
+            <!--/* Added Language */-->
+            <input type="hidden" name="addedLanguage" disabled="disabled" value="" />
+
+            <!--/* Removed Language */-->
+            <input type="hidden" name="removedLanguage" disabled="disabled" value="" />
+
+          </form>
+
+        </div>
+
+      </div>
+
+      <div th:include="templates/widgets :: geocodingErrorModal('generic')"></div>
+      <div th:include="templates/widgets :: geocodingErrorModal('precision')"></div>
+
+    </section>
+
+    <div th:include="templates/layout :: footer"></div>
+
+    <!--/* Foundation initialization */-->
+    <script src="../../../resources/js/vendor/jquery.js" th:src="@{/js/vendor/jquery.js}"></script>
+    <script src="../../../resources/js/foundation.min.js" th:src="@{/js/foundation.min.js}"></script>
+    <script>
+      $(document).foundation();
+    </script>
+    <!--/* Plugins */-->
+    <script src="../../../resources/js/plugins/jquery.maskedinput.min.js" th:src="@{/js/plugins/jquery.maskedinput.min.js}"></script>
+    <!--/* Google Maps API */-->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <!--/* Geomenum */-->
+    <script src="../../../resources/js/geomenum/geomenum.js" th:src="@{/js/geomenum/geomenum.js}"></script>
+    <script src="../../../resources/js/geomenum/views/restaurant/restaurant.js" th:src="@{/js/geomenum/views/restaurant/restaurant.js}"></script>
+  </body>
+</html>

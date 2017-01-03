@@ -1,0 +1,247 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <!-- Needed for prototyping -->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Geomenum Templates</title>
+    <link rel="stylesheet" type="text/css" media="all" href="../../resources/css/foundation.css" />
+    <script src="../../resources/js/vendor/modernizr.js"></script>
+  </head>
+
+  <body>
+
+    <hr/>Header :
+    <!--************-->
+    <!--   HEADER   -->
+    <!--************-->
+
+    <div th:fragment="header">
+
+      <div class="contain-to-grid sticky">
+
+        <nav class="top-bar" data-topbar="">
+
+          <ul class="title-area">
+            <li class="name">
+              <h1><a href="../views/private_home.html" th:href="@{/home}">Geomenum <sup>&beta;eta</sup></a></h1>
+            </li>
+          </ul>
+
+          <section class="top-bar-section">
+            <ul class="right">
+
+              <li class="name">
+                <a href="../views/reservation/reservation.html" th:href="@{/reservation}" th:text="#{topbar.reservations}">#Reservations</a>
+              </li>
+
+              <!--/* Menu (TODO : multiple restaurants dropdown with name) */-->
+              <!--/* <li class="name"><a href="menu.html" th:href="@{${header['menu'][0]['url']}}" th:text="#{topbar.menu}">#Menu</a></li> */-->
+              <li th:switch="${#lists.size(header['menu'])}" class="name">
+                <a th:case="1" href="menu.html" th:href="@{${header['menu'][0]['url']}}" th:text="#{topbar.menu}">#Menu</a>
+              </li>
+
+              <!--/* Restaurant (TODO : multiple restaurants dropdown with name) */-->
+              <!--/* <li class="name"><a href="restaurant.html" th:href="@{${header['restaurant'][0]['url']}}" th:text="#{topbar.restaurant}">#Restaurant</a></li> */-->
+              <li th:switch="${#lists.size(header['restaurant'])}" class="name">
+                <a th:case="1" href="restaurant.html" th:href="@{${header['restaurant'][0]['url']}}" th:text="#{topbar.restaurant}">#Restaurant</a>
+              </li>
+
+              <!--/* Profile */-->
+              <li class="has-dropdown">
+                <a href="#" th:text="#{topbar.profile}">#My profile</a>
+                <ul class="dropdown">
+                  <li><a href="/settings" th:href="@{'/user/' + ${header['userId']}}" th:text="#{topbar.settings}">#Settings</a></li>
+                  <li><a href="/j_spring_security_logout" th:href="@{/logout}"
+                         th:text="#{topbar.logout}" class="alert button">#Sign out</a></li>
+                </ul>
+              </li>
+            </ul>
+          </section>
+
+        </nav>
+
+      </div>
+
+      <div class="row">&nbsp;</div>
+
+    </div>
+
+    <hr/>Public Header :
+    <!--*******************-->
+    <!--   PUBLIC HEADER   -->
+    <!--*******************-->
+
+    <div th:fragment="publicHeader">
+
+      <div class="contain-to-grid sticky">
+
+        <nav class="top-bar" data-topbar="">
+
+          <ul class="title-area">
+            <li class="name">
+              <h1><a href="../views/public_home.html" th:href="@{/}">Geomenum <sup>&beta;eta</sup></a></h1>
+            </li>
+          </ul>
+
+          <section class="top-bar-section">
+            <ul class="right columns">
+
+              <!--/* Languages*/-->
+              <li class="has-dropdown">
+                <a th:text="#{topbar.language}">#Language</a>
+                <ul class="dropdown">
+                  <li th:each="supportedLanguage : ${supportedLanguages}">
+                    <a th:href="@{'?locale=' + ${supportedLanguage.getLanguage()}}"
+                       th:text="${supportedLanguage.getDisplayLanguage(#ctx.locale)}"></a>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+          </section>
+
+        </nav>
+
+      </div>
+
+      <div class="row">&nbsp;</div>
+
+    </div>
+
+    <hr/>Footer :
+    <!--************-->
+    <!--   FOOTER   -->
+    <!--************-->
+
+    <div th:fragment="footer">
+
+      <footer class="row">
+        <div class="large-12 columns">
+          <hr />
+          <div class="row">
+            <div class="large-6 columns">
+              <p style="margin-top: 0.75rem">&copy; Copyright 2014 · Geomenum · All rights reserved</p>
+            </div>
+            <div class="large-6 columns">
+              <ul class="inline-list right">
+                <li>
+                  <a href="mailto:contact@geomenum.com">
+                    <img src="../../resources/img/social/mail_icon_45x45.png"
+                         th:src="@{/img/social/mail_icon_45x45.png}" alt="mail" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.facebook.com/pages/Geomenum/578451698895486">
+                    <img src="../../resources/img/social/facebook_icon_45x45.png"
+                         th:src="@{/img/social/facebook_icon_45x45.png}" alt="facebook" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/geomenum">
+                    <img src="../../resources/img/social/twitter_icon_45x45.png"
+                         th:src="@{/img/social/twitter_icon_45x45.png}" alt="twitter" />
+                  </a>
+                </li>
+                <li>
+                  <a href="https://plus.google.com/113563909296591667049" rel="publisher">
+                    <img src="../../resources/img/social/google+_icon_45x45.png"
+                         th:src="@{/img/social/google+_icon_45x45.png}" alt="Google+" />
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+
+    <hr/>Breadcrumb Navigation bar :
+    <!--********************************-->
+    <!--   BREADCRUMB NAVIGATION BAR   -->
+    <!--********************************-->
+
+    <div th:fragment="breadcrumbNavigationBar">
+
+      <nav class="breadcrumbs">
+        <a th:each="navBarLink, iterStat : ${breadcrumbNavigationBar}"
+           th:href="@{${navBarLink['url']}}" href="/linkToAnotherMenuContent" th:text="${navBarLink['text']}"
+           th:classappend="${iterStat.last} ? 'current'">$navBarLink.text</a>
+      </nav>
+
+      <br />
+
+    </div>
+
+    <!-- SIDEBAR NAVIGATION *****************************************************************************************-->
+
+    <hr/>Sidebar navigation :
+    <!--************************-->
+    <!--   SIDEBAR NAVIGATION   -->
+    <!--************************-->
+
+    <div th:fragment="sidebar_navigation">
+
+      <div class="panel">
+        <ul class="side-nav">
+          <li><a href="#">Link 1</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 2</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 3</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 4</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <hr/>Restaurant Sidebar navigation :
+    <!--***********************************-->
+    <!--   RESTAURANT SIDEBAR NAVIGATION   -->
+    <!--***********************************-->
+
+    <div th:fragment="restaurantSidebarNavigation">
+
+      <div class="panel">
+        <ul class="side-nav">
+          <li><a href="#">Link 1</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 2</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 3</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 4</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <hr/>Submenu Dashboard :
+    <!--************************-->
+    <!--   SUBMENU DASHBOARD   -->
+    <!--************************-->
+
+    <div th:fragment="submenu_dashboard">
+
+      <div class="panel">
+        <ul class="side-nav">
+          <li><a href="#">Link 1</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 2</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 3</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Link 4</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+  </body>
+
+</html>
